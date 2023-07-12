@@ -1,10 +1,14 @@
-const express = require("express");
+import connectDb from "./config/connectDb.js";
+import express from "express";
+import cors from "cors";
+import morgan from "morgan";
+import dotenv from "dotenv";
 
-const cors = require("cors");
-const morgan = require("morgan");
-const dotenv = require("dotenv");
 // config dotenv file
 dotenv.config();
+
+//database call
+connectDb();
 
 //rest object
 const app = express();
