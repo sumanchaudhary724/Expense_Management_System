@@ -1,0 +1,13 @@
+
+### read tasks api
+GET http://localhost:8080/api/v1/users
+
+### read tasks api
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+    "name": "suman",
+    "email": "suman@gmail.com",
+    "password": "123456"
+}
