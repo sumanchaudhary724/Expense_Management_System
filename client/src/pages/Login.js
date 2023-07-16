@@ -2,26 +2,34 @@ import React, { useState } from "react";
 import { Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
-import axios from "axios";
+import { loginUser } from "../axiosHelper";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  //From submit
+
   const submitHandler = async (values) => {
     try {
       setLoading(true);
-      const { data } = await axios.post("/users/login", values);
-      setLoading(false);
-      message.success("Login success");
-      localStorage.setItem("user", JSON.stringify({ ...data, password: "" }));
-      navigate("/");
+      const response = await loginUser(values);
+
+      if (response.status === "success") {
+        message.success("Login Successful");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ ...response.data, password: "" })
+        );
+        navigate("/");
+      } else {
+        message.error(response.message);
+      }
     } catch (error) {
-      setLoading(false);
       message.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
-    console.log(values);
   };
+
   return (
     <>
       <div className="register-page">
@@ -35,7 +43,7 @@ const Login = () => {
             <Input type="password" />
           </Form.Item>
           <div className="d-flex justify-content-between">
-            <Link to="/register">Not a user ? Click here to register</Link>
+            <Link to="/register">Not a user? Click here to register</Link>
             <button className="btn btn-primary" type="submit">
               Login
             </button>

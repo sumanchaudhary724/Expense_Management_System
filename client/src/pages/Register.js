@@ -1,24 +1,29 @@
 import React, { useState } from "react";
 import { Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { postUser } from "../axiosHelper";
 import Spinner from "../components/Spinner";
+
 const Register = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  //From submit
+
   const submitHandler = async (values) => {
     try {
       setLoading(true);
-      await axios.post("/users/register", values);
-      message.success("Registration Successfully");
-      navigate("/login");
-      setLoading(false);
+      const response = await postUser(values);
+
+      if (response.status === "success") {
+        message.success("Registration Successful");
+        navigate("/login");
+      } else {
+        message.error(response.message);
+      }
     } catch (error) {
-      setLoading(false);
       message.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
-    console.log(values);
   };
 
   return (
@@ -37,7 +42,7 @@ const Register = () => {
             <Input type="password" />
           </Form.Item>
           <div className="d-flex justify-content-between">
-            <Link to="/login">Already Register ? Click Here To Login</Link>
+            <Link to="/login">Already Registered? Click Here To Login</Link>
             <button className="btn btn-primary" type="submit">
               Register
             </button>

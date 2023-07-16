@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
     user?._id
       ? res.json({
           status: "success",
-          message: "New user has been created successfull",
+          message: "New user has been created successfully",
         })
       : res.json({
           status: "error",
