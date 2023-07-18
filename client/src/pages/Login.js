@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { loginUser } from "../axiosHelper";
+import Layout from "../components/Layout/Layout";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -30,8 +31,15 @@ const Login = () => {
     }
   };
 
+  //prevent for login user
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
+    }
+  }, [navigate]);
+
   return (
-    <>
+    <Layout>
       <div className="register-page">
         {loading && <Spinner />}
         <Form layout="vertical" onFinish={submitHandler}>
@@ -50,7 +58,7 @@ const Login = () => {
           </div>
         </Form>
       </div>
-    </>
+    </Layout>
   );
 };
 
