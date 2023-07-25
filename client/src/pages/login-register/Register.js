@@ -1,26 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import Spinner from "../components/Spinner";
-import { loginUser } from "../axiosHelper";
-import Layout from "../components/Layout/Layout";
+import { postUser } from "../../axiosHelper";
+import Spinner from "../../components/Spinner";
 
-const Login = () => {
-  const [loading, setLoading] = useState(false);
+const Register = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async (values) => {
     try {
       setLoading(true);
-      const response = await loginUser(values);
+      const response = await postUser(values);
 
       if (response.status === "success") {
-        message.success("Login Successful");
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ ...response.data, password: "" })
-        );
-        navigate("/");
+        message.success("Registration Successfully");
+        navigate("/login");
       } else {
         message.error(response.message);
       }
@@ -39,11 +34,14 @@ const Login = () => {
   }, [navigate]);
 
   return (
-    <Layout>
+    <>
       <div className="register-page">
         {loading && <Spinner />}
         <Form layout="vertical" onFinish={submitHandler}>
-          <h1>Login Form</h1>
+          <h1>Register Form</h1>
+          <Form.Item label="Name" name="name">
+            <Input />
+          </Form.Item>
           <Form.Item label="Email" name="email">
             <Input type="email" />
           </Form.Item>
@@ -51,15 +49,15 @@ const Login = () => {
             <Input type="password" />
           </Form.Item>
           <div className="d-flex justify-content-between">
-            <Link to="/register">Not a user? Click here to register</Link>
+            <Link to="/login">Already Registered? Click Here To Login</Link>
             <button className="btn btn-primary" type="submit">
-              Login
+              Register
             </button>
           </div>
         </Form>
       </div>
-    </Layout>
+    </>
   );
 };
 
-export default Login;
+export default Register;

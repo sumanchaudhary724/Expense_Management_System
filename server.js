@@ -1,5 +1,6 @@
 import connectDb from "./config/connectDb.js";
 import userRouter from "./routes/userRoute.js";
+import transectionRouter from "./routes/transectionRoute.js";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -31,6 +32,8 @@ app.get("/", (req, res) => {
 
 // app.use("/api/v1/users", userRouter);
 app.use("/api/v1/users", userRouter);
+
+app.use("/api/v1/transections", transectionRouter);
 
 app.use("/", (req, res) => {
   res.json({
