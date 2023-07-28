@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.post("/", async (req, res) => {
+router.post("/add-transection", async (req, res) => {
   try {
     const result = await addTransections(req.body);
 
@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
         })
       : res.json({
           status: "error",
-          message: "Error, unable to add the book, try again later",
+          message: "Error, unable to add the transection, try again later",
         });
   } catch (error) {
     res.json({

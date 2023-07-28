@@ -5,7 +5,7 @@ export const addTransections = (obj) => {
 };
 
 export const getTransections = () => {
-  return transectionSchema.find();
+  return transectionSchema.find({ userid: req.body.userid });
 };
 
 export const updateTransections = (_id, data) => {

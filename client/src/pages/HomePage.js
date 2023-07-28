@@ -1,17 +1,39 @@
 import React, { useState } from "react";
-import { Modal, Form, Input, Select } from "antd";
+import { Modal, Form, Input, Select, message } from "antd";
 import Layout from "../components/Layout/Layout";
+import { postTransection } from "../axiosHelper";
+import Spinner from "../components/Spinner";
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   //Form handling
-  const handleSubmit = (values) => {
-    console.log(values);
+  const handleSubmit = async (values) => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const response = await postTransection({ ...values, userid: user._id });
+      setLoading(false);
+      if (response.status === "success") {
+        message.success("Transection Successfully");
+        setShowModal(false);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      message.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <Layout>
       <div className="filters">Range filters</div>
+      {loading && <Spinner />}
       <div>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>
           Add New

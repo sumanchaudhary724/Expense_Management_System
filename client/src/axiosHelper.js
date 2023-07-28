@@ -33,7 +33,7 @@ export const loginUser = async (userData) => {
 
 export const postTransection = async (obj) => {
   try {
-    const { data } = await axios.post(transectionAPI, obj);
+    const { data } = await axios.post(transectionAPI + "/add-transection", obj);
 
     return data;
   } catch (error) {
