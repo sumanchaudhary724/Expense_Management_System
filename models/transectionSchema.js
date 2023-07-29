@@ -22,11 +22,11 @@ const transectionSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: [true, "desc is required"],
+      required: [true, "Description is required"],
     },
     date: {
       type: String,
-      required: [true, "data is required"],
+      required: [true, "Date is required"],
     },
   },
   {

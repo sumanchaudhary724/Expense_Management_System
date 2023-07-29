@@ -6,7 +6,7 @@ import {
 
 const router = express.Router();
 
-router.post("/add-transection", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const result = await addTransections(req.body);
 

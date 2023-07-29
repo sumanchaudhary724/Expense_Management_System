@@ -69,7 +69,7 @@ const HomePage = () => {
               <Select.Option value="tax">Tax</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Date">
+          <Form.Item label="Date" name="date">
             <Input type="date" />
           </Form.Item>
           <Form.Item label="Reference" name="reference">
