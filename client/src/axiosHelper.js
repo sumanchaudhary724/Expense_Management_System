@@ -43,3 +43,21 @@ export const postTransection = async (obj) => {
     };
   }
 };
+
+export const getTransetions = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    setLoading(true);
+    const { data } = await axios.post(transectionAPI + "/get-Transection", {
+      userid: userAPI._id,
+    });
+    setLoading(false);
+    setTransection(data);
+    return data;
+  } catch (error) {
+    return {
+      status: "error",
+      message: error.message,
+    };
+  }
+};

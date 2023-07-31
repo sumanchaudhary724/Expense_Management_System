@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Select, message } from "antd";
 import Layout from "../components/Layout/Layout";
 import { postTransection } from "../axiosHelper";
@@ -7,6 +7,18 @@ import Spinner from "../components/Spinner";
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const[transections, setTransections] = useState([])
+
+  //get all transections
+  const getTransetions = async () => {
+    try{
+const user = JSON.parse(localStorage.getItem("user"))
+setLoading(true) 
+await 
+    } catch (error) {
+      message.error("Fetch Issue with Transection")
+    }
+  }
 
   //Form handling
   const handleSubmit = async (values) => {
