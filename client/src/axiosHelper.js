@@ -44,15 +44,9 @@ export const postTransection = async (obj) => {
   }
 };
 
-export const getTransetions = async () => {
+export const getTransections = async (obj) => {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
-    setLoading(true);
-    const { data } = await axios.post(transectionAPI + "/get-Transection", {
-      userid: userAPI._id,
-    });
-    setLoading(false);
-    setTransection(data);
+    const { data } = await axios.get(transectionAPI, obj);
     return data;
   } catch (error) {
     return {

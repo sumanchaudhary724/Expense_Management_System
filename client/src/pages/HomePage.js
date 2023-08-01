@@ -1,24 +1,104 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Select, message } from "antd";
+import {
+  Modal,
+  Form,
+  Input,
+  Select,
+  message,
+  Table,
+  // Space,
+  // Button,
+} from "antd";
 import Layout from "../components/Layout/Layout";
-import { postTransection } from "../axiosHelper";
+import { postTransection, getTransections } from "../axiosHelper";
 import Spinner from "../components/Spinner";
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const[transections, setTransections] = useState([])
+  const [transections, setTransections] = useState([]);
 
-  //get all transections
-  const getTransetions = async () => {
-    try{
-const user = JSON.parse(localStorage.getItem("user"))
-setLoading(true) 
-await 
+  // table data
+  const data = [
+    {
+      title: "Date",
+      dataIndex: "date",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+    },
+    {
+      title: "Type",
+      dataIndex: "type",
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+    },
+    {
+      title: "Reference",
+      dataIndex: "reference",
+    },
+    {
+      title: "Actions",
+    },
+  ];
+
+  // // Function to delete a transaction
+  // const handleDelete = async (record) => {
+  //   try {
+  //     setLoading(true);
+  //     const user = JSON.parse(localStorage.getItem("user"));
+  //     const response = await deleteTransection(user._id, record._id);
+  //     setLoading(false);
+  //     if (response.status === "success") {
+  //       message.success("Transaction deleted successfully");
+  //       fetchTransections(); // Refresh the transactions after deletion
+  //     } else {
+  //       message.error(response.message);
+  //     }
+  //   } catch (error) {
+  //     setLoading(false);
+  //     message.error("Something went wrong while deleting the transaction.");
+  //   }
+  // };
+
+  // Map the transactions to the table data format
+  const tableData = transections.map((transaction) => ({
+    key: transaction._id, // Unique key for each row (you may use some other unique identifier if available)
+    date: transaction.date,
+    amount: transaction.amount,
+    type: transaction.type,
+    category: transaction.category,
+    reference: transaction.reference,
+    // actions: (
+    //   <Space size="middle">
+    //     <Button onClick={() => handleDelete(transaction)} danger>
+    //       Delete
+    //     </Button>
+    //   </Space>
+    // ),
+  }));
+
+  // Function to fetch transaction data
+  const fetchTransections = async () => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+      const response = await getTransections(user._id);
+      setLoading(false);
+      setTransections(response);
     } catch (error) {
-      message.error("Fetch Issue with Transection")
+      setLoading(false);
+      message.error("Error fetching transactions.");
     }
-  }
+  };
+
+  // Use useEffect to fetch transaction data when the component mounts
+  useEffect(() => {
+    fetchTransections();
+  }, []);
 
   //Form handling
   const handleSubmit = async (values) => {
@@ -51,9 +131,11 @@ await
           Add New
         </button>
       </div>
-      <div className="content"></div>
+      <div className="content">
+        <Table columns={data} dataSource={tableData}></Table>
+      </div>
       <Modal
-        title="Add Transection"
+        title="Add Transaction"
         open={showModal}
         onCancel={() => setShowModal(false)}
         footer={false}
@@ -100,5 +182,4 @@ await
     </Layout>
   );
 };
-
 export default HomePage;
