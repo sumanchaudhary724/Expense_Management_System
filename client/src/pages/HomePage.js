@@ -23,22 +23,27 @@ const HomePage = () => {
     {
       title: "Date",
       dataIndex: "date",
+      key: "date",
     },
     {
       title: "Amount",
       dataIndex: "amount",
+      key: "amount",
     },
     {
       title: "Type",
       dataIndex: "type",
+      key: "type",
     },
     {
       title: "Category",
       dataIndex: "category",
+      key: "category",
     },
     {
       title: "Reference",
       dataIndex: "reference",
+      key: "reference",
     },
     {
       title: "Actions",
@@ -74,9 +79,10 @@ const HomePage = () => {
     reference: transaction.reference,
     // actions: (
     //   <Space size="middle">
-    //     <Button onClick={() => handleDelete(transaction)} danger>
+    //     <Button></Button>
+    //     {/* <Button onClick={() => handleDelete(transaction)} danger>
     //       Delete
-    //     </Button>
+    //     </Button> */}
     //   </Space>
     // ),
   }));
@@ -88,7 +94,10 @@ const HomePage = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       const response = await getTransections(user._id);
       setLoading(false);
-      setTransections(response);
+      const transectionsArray = Object.values(response);
+
+      setTransections(transectionsArray);
+      console.log(transectionsArray);
     } catch (error) {
       setLoading(false);
       message.error("Error fetching transactions.");

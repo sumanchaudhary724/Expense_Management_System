@@ -44,9 +44,9 @@ export const postTransection = async (obj) => {
   }
 };
 
-export const getTransections = async (obj) => {
+export const getTransections = async (userData) => {
   try {
-    const { data } = await axios.get(transectionAPI, obj);
+    const { data } = await axios.get(transectionAPI, userData);
     return data;
   } catch (error) {
     return {
