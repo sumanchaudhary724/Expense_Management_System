@@ -77,10 +77,10 @@ const HomePage = () => {
     type: transaction.type,
     category: transaction.category,
     reference: transaction.reference,
-    // actions: (
-    //   <Space size="middle">
-    //     <Button></Button>
-    //     {/* <Button onClick={() => handleDelete(transaction)} danger>
+actions: (
+   <Space size="middle">
+    <Button></Button>
+    {/* <Button onClick={() => handleDelete(transaction)} danger>
     //       Delete
     //     </Button> */}
     //   </Space>
