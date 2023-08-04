@@ -6,11 +6,15 @@ import {
   Select,
   message,
   Table,
-  // Space,
-  // Button,
+  Space,
+  Button,
 } from "antd";
 import Layout from "../components/Layout/Layout";
-import { postTransection, getTransections } from "../axiosHelper";
+import {
+  postTransection,
+  getTransections,
+  deleteTransections,
+} from "../axiosHelper";
 import Spinner from "../components/Spinner";
 
 const HomePage = () => {
@@ -50,41 +54,41 @@ const HomePage = () => {
     },
   ];
 
-  // // Function to delete a transaction
-  // const handleDelete = async (record) => {
-  //   try {
-  //     setLoading(true);
-  //     const user = JSON.parse(localStorage.getItem("user"));
-  //     const response = await deleteTransection(user._id, record._id);
-  //     setLoading(false);
-  //     if (response.status === "success") {
-  //       message.success("Transaction deleted successfully");
-  //       fetchTransections(); // Refresh the transactions after deletion
-  //     } else {
-  //       message.error(response.message);
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     message.error("Something went wrong while deleting the transaction.");
-  //   }
-  // };
+  // Function to delete a transaction
+  const handleDelete = async (record) => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+      const response = await deleteTransections(user._id, record._id);
+      setLoading(false);
+      if (response.status === "success") {
+        message.success("Transaction deleted successfully");
+        fetchTransections(); // Refresh the transactions after deletion
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      message.error("Something went wrong while deleting the transaction.");
+    }
+  };
 
   // Map the transactions to the table data format
-  const tableData = transections.map((transaction) => ({
-    key: transaction._id, // Unique key for each row (you may use some other unique identifier if available)
-    date: transaction.date,
-    amount: transaction.amount,
-    type: transaction.type,
-    category: transaction.category,
-    reference: transaction.reference,
-actions: (
-   <Space size="middle">
-    <Button></Button>
-    {/* <Button onClick={() => handleDelete(transaction)} danger>
-    //       Delete
-    //     </Button> */}
-    //   </Space>
-    // ),
+  const tableData = transections.map((item, i) => ({
+    key: i + 1, // Unique key for each row (you may use some other unique identifier if available)
+    date: item.date,
+    amount: item.amount,
+    type: item.type,
+    category: item.category,
+    reference: item.reference,
+    actions: (
+      <Space size="middle">
+        <Button></Button>
+        <Button onClick={() => handleDelete(item)} danger>
+          Delete
+        </Button>
+      </Space>
+    ),
   }));
 
   // Function to fetch transaction data

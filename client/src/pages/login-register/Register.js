@@ -28,6 +28,7 @@ const Register = () => {
 
   //prevent for login user
   useEffect(() => {
+    <p>Hello world </p>;
     if (localStorage.getItem("user")) {
       navigate("/");
     }
