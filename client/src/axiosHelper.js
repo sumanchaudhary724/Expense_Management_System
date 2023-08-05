@@ -58,7 +58,7 @@ export const getTransections = async (userData) => {
 
 export const deleteTransections = async (_id) => {
   try {
-    const { data } = await axios.delete(transectionAPI + "/" + _id, {});
+    const { data } = await axios.delete(transectionAPI + "/" + _id);
 
     return data;
   } catch (error) {

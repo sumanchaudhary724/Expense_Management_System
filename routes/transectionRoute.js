@@ -2,10 +2,12 @@ import express from "express";
 import {
   addTransections,
   getTransections,
+  deleteTransections,
 } from "../models/transectionModel.js";
 
 const router = express.Router();
 
+// Add a new transaction
 router.post("/", async (req, res) => {
   try {
     const result = await addTransections(req.body);
@@ -27,6 +29,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Get all transactions
 router.get("/", async (req, res) => {
   try {
     const transections = await getTransections();
@@ -39,6 +42,32 @@ router.get("/", async (req, res) => {
     res.json({
       status: "error",
       message: error.message,
+    });
+  }
+});
+
+// Delete a transaction
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedTransaction = await deleteTransections(id);
+
+    if (deletedTransaction) {
+      res.json({
+        status: "success",
+        message: "Transaction deleted successfully",
+        transaction: deletedTransaction,
+      });
+    } else {
+      res.json({
+        status: "error",
+        message: "Transaction not found",
+      });
+    }
+  } catch (error) {
+    res.json({
+      status: "error",
+      message: "Error deleting the transaction",
     });
   }
 });

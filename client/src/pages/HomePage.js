@@ -20,10 +20,54 @@ import Spinner from "../components/Spinner";
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [transections, setTransections] = useState([]);
+  const [transections, setTransections] = useState([]); // Initialize transections state as an empty array
+
+  // Function to delete a transaction
+  const handleDelete = async (transactionId) => {
+    try {
+      setLoading(true);
+      const response = await deleteTransections(transactionId);
+      setLoading(false);
+
+      if (response.status === "success") {
+        message.success("Transaction deleted successfully");
+        fetchTransections(); // Refresh the transactions after deletion
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      message.error("Something went wrong while deleting the transaction.");
+    }
+  };
+
+  // Calculate tableData using the transections state
+  const tableData = transections.map((item, i) => ({
+    key: item._id,
+    SN: i + 1, // Add the SN (expense ID number) starting from 1
+    date: item.date,
+    amount: item.amount,
+    type: item.type,
+    category: item.category,
+    reference: item.reference,
+    description: item.description,
+    actions: (
+      <Space size="middle">
+        {/* <Button onClick={() => handleEdit(item)}>Edit</Button> */}
+        <Button onClick={() => handleDelete(item._id)} danger>
+          Delete
+        </Button>
+      </Space>
+    ),
+  }));
 
   // table data
-  const data = [
+  const columns = [
+    {
+      title: "SN", // Display the SN (expense ID number) as a column
+      dataIndex: "SN",
+      key: "SN",
+    },
     {
       title: "Date",
       dataIndex: "date",
@@ -50,46 +94,11 @@ const HomePage = () => {
       key: "reference",
     },
     {
-      title: "Actions",
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
     },
   ];
-
-  // Function to delete a transaction
-  const handleDelete = async (record) => {
-    try {
-      setLoading(true);
-      const user = JSON.parse(localStorage.getItem("user"));
-      const response = await deleteTransections(user._id, record._id);
-      setLoading(false);
-      if (response.status === "success") {
-        message.success("Transaction deleted successfully");
-        fetchTransections(); // Refresh the transactions after deletion
-      } else {
-        message.error(response.message);
-      }
-    } catch (error) {
-      setLoading(false);
-      message.error("Something went wrong while deleting the transaction.");
-    }
-  };
-
-  // Map the transactions to the table data format
-  const tableData = transections.map((item, i) => ({
-    key: i + 1, // Unique key for each row (you may use some other unique identifier if available)
-    date: item.date,
-    amount: item.amount,
-    type: item.type,
-    category: item.category,
-    reference: item.reference,
-    actions: (
-      <Space size="middle">
-        <Button></Button>
-        <Button onClick={() => handleDelete(item)} danger>
-          Delete
-        </Button>
-      </Space>
-    ),
-  }));
 
   // Function to fetch transaction data
   const fetchTransections = async () => {
@@ -98,12 +107,19 @@ const HomePage = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       const response = await getTransections(user._id);
       setLoading(false);
-      const transectionsArray = Object.values(response);
 
-      setTransections(transectionsArray);
-      console.log(transectionsArray);
+      console.log("API response:", response); // Log the API response
+
+      if (response.status === "success") {
+        const transectionsArray = response.transections; // Extract the 'transections' array from the response
+        setTransections(transectionsArray); // Update the 'transections' state with the extracted array
+        console.log("Transections array:", transectionsArray);
+      } else {
+        message.error(response.message);
+      }
     } catch (error) {
       setLoading(false);
+      console.error("Error fetching transactions:", error);
       message.error("Error fetching transactions.");
     }
   };
@@ -124,6 +140,7 @@ const HomePage = () => {
       if (response.status === "success") {
         message.success("Transection Successfully");
         setShowModal(false);
+        window.location.reload();
       } else {
         message.error(response.message);
       }
@@ -145,7 +162,13 @@ const HomePage = () => {
         </button>
       </div>
       <div className="content">
-        <Table columns={data} dataSource={tableData}></Table>
+        <Table
+          columns={[
+            ...columns,
+            { title: "Actions", dataIndex: "actions", key: "actions" },
+          ]}
+          dataSource={tableData}
+        />
       </div>
       <Modal
         title="Add Transaction"
