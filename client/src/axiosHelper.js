@@ -68,3 +68,12 @@ export const deleteTransections = async (_id) => {
     };
   }
 };
+
+export const updateTransections = async (_id, data) => {
+  try {
+    const response = await axios.put(transectionAPI + "/" + _id, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

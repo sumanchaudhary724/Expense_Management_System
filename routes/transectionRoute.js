@@ -3,6 +3,7 @@ import {
   addTransections,
   getTransections,
   deleteTransections,
+  updateTransections,
 } from "../models/transectionModel.js";
 
 const router = express.Router();
@@ -42,6 +43,34 @@ router.get("/", async (req, res) => {
     res.json({
       status: "error",
       message: error.message,
+    });
+  }
+});
+
+// Update a transaction
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = req.body;
+
+    const updatedTransaction = await updateTransections(id, data);
+
+    if (updatedTransaction) {
+      res.json({
+        status: "success",
+        message: "Transaction updated successfully",
+        transections: updatedTransaction,
+      });
+    } else {
+      res.json({
+        status: "error",
+        message: "Transaction not found",
+      });
+    }
+  } catch (error) {
+    res.json({
+      status: "error",
+      message: "Error updating the transaction",
     });
   }
 });

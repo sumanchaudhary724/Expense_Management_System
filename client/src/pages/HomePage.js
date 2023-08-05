@@ -14,6 +14,7 @@ import {
   postTransection,
   getTransections,
   deleteTransections,
+  updateTransections,
 } from "../axiosHelper";
 import Spinner from "../components/Spinner";
 
@@ -21,6 +22,41 @@ const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transections, setTransections] = useState([]); // Initialize transections state as an empty array
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [currentTransaction, setCurrentTransaction] = useState(null);
+
+  const handleEdit = (transaction) => {
+    setEditModalVisible(true);
+    setCurrentTransaction(transaction);
+  };
+
+  const handleEditSubmit = async (values) => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const response = await updateTransections(currentTransaction._id, {
+        ...values,
+        userid: user._id,
+      });
+      setLoading(false);
+
+      if (response.status === "success") {
+        message.success("Transaction updated successfully");
+        setEditModalVisible(false);
+        setCurrentTransaction(null);
+        // Update the state by fetching the latest transactions
+        fetchTransections();
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      message.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Function to delete a transaction
   const handleDelete = async (transactionId) => {
@@ -31,7 +67,10 @@ const HomePage = () => {
 
       if (response.status === "success") {
         message.success("Transaction deleted successfully");
-        fetchTransections(); // Refresh the transactions after deletion
+        // Update the state by filtering out the deleted transaction
+        setTransections((prevTransactions) =>
+          prevTransactions.filter((item) => item._id !== transactionId)
+        );
       } else {
         message.error(response.message);
       }
@@ -53,7 +92,9 @@ const HomePage = () => {
     description: item.description,
     actions: (
       <Space size="middle">
-        {/* <Button onClick={() => handleEdit(item)}>Edit</Button> */}
+        <Button onClick={() => handleEdit(item)} type="primary">
+          Edit
+        </Button>
         <Button onClick={() => handleDelete(item._id)} danger>
           Delete
         </Button>
@@ -138,9 +179,10 @@ const HomePage = () => {
       const response = await postTransection({ ...values, userid: user._id });
       setLoading(false);
       if (response.status === "success") {
-        message.success("Transection Successfully");
+        message.success("Transaction added successfully");
         setShowModal(false);
-        window.location.reload();
+        // Update the state by fetching the latest transactions
+        fetchTransections();
       } else {
         message.error(response.message);
       }
@@ -171,12 +213,19 @@ const HomePage = () => {
         />
       </div>
       <Modal
-        title="Add Transaction"
-        open={showModal}
-        onCancel={() => setShowModal(false)}
+        title={currentTransaction ? "Edit Transaction" : "Add Transaction"}
+        open={showModal || editModalVisible}
+        onCancel={() => {
+          setShowModal(false);
+          setEditModalVisible(false);
+          setCurrentTransaction(null);
+        }}
         footer={false}
       >
-        <Form layout="vertical" onFinish={handleSubmit}>
+        <Form
+          layout="vertical"
+          onFinish={currentTransaction ? handleEditSubmit : handleSubmit}
+        >
           <Form.Item label="Amount" name="amount">
             <Input type="text" />
           </Form.Item>
@@ -210,7 +259,7 @@ const HomePage = () => {
           </Form.Item>
           <div className="d-flex justify-content-end">
             <button className="btn btn-primary" type="submit">
-              SAVE
+              {currentTransaction ? "UPDATE" : "SAVE"}
             </button>
           </div>
         </Form>
@@ -218,4 +267,5 @@ const HomePage = () => {
     </Layout>
   );
 };
+
 export default HomePage;
