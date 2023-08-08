@@ -34,16 +34,16 @@ router.post("/", async (req, res) => {
 // Get all transactions
 router.get("/", async (req, res) => {
   try {
-    const { frequency } = req.body;
+    const { frequency, userid } = req.query; // Use req.query to get query parameters
     const transections = await getTransections({
       date: {
-        $gt: moment().subtract(Number(frequency), "M").toDate(),
+        $gt: moment().subtract(Number(frequency), "d").toDate(),
       },
-      userid: req.body.userid,
+      userid: userid,
     });
     res.json({
       status: "success",
-      message: "Transection list",
+      message: "Transaction list",
       transections,
     });
   } catch (error) {

@@ -8,6 +8,7 @@ import {
   Table,
   Space,
   Button,
+  DatePicker,
 } from "antd";
 import Layout from "../components/Layout/Layout";
 import {
@@ -17,6 +18,8 @@ import {
   updateTransections,
 } from "../axiosHelper";
 import Spinner from "../components/Spinner";
+import moment from "moment";
+const { RangePicker } = DatePicker;
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -25,6 +28,8 @@ const HomePage = () => {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState(null);
   const [frequency, setFrequency] = useState(" 7 ");
+  const [selectedDate, setSelectedDate] = useState([]);
+  const [type, setType] = useState("all");
 
   const handleEdit = (transaction) => {
     setEditModalVisible(true);
@@ -113,6 +118,7 @@ const HomePage = () => {
     {
       title: "Date",
       dataIndex: "date",
+      render: (text) => <span>{moment(text).format("YYYY-MM-DD")}</span>,
       key: "date",
     },
     {
@@ -147,7 +153,12 @@ const HomePage = () => {
     try {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem("user"));
-      const response = await getTransections(user._id, frequency);
+      const response = await getTransections(
+        user._id,
+        frequency,
+        selectedDate,
+        type
+      );
       setLoading(false);
 
       console.log("API response:", response); // Log the API response
@@ -169,7 +180,7 @@ const HomePage = () => {
   // Use useEffect to fetch transaction data when the component mounts
   useEffect(() => {
     fetchTransections();
-  }, [frequency]);
+  }, [frequency, selectedDate, type]);
 
   //Form handling
   const handleSubmit = async (values) => {
@@ -197,21 +208,41 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <div className="filters">
-        <h6>Select Frequency</h6>
-        <Select value={frequency} onChange={(values) => setFrequency(values)}>
-          <Select.Option value="7">LAST 1 WEEK</Select.Option>
-          <Select.Option value="30">LAST 1 MONTH</Select.Option>
-          <Select.Option value="365">LAST 1 YEAR</Select.Option>
-          <Select.Option value="custom">CUSTOM</Select.Option>
-        </Select>
-      </div>
       {loading && <Spinner />}
-      <div>
-        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-          Add New
-        </button>
+      <div className="filters">
+        <div>
+          <h6>Select Frequency</h6>
+          <Select value={frequency} onChange={(value) => setFrequency(value)}>
+            <Select.Option value="7">LAST 1 Week</Select.Option>
+            <Select.Option value="30">LAST 1 Month</Select.Option>
+            <Select.Option value="365">LAST 1 Year</Select.Option>
+            <Select.Option value="custom">Custom</Select.Option>
+          </Select>
+          {frequency === "custom" && (
+            <RangePicker
+              value={selectedDate}
+              onChange={(dates) => setSelectedDate(dates)}
+            />
+          )}
+        </div>
+        <div>
+          <h6>Select Type</h6>
+          <Select value={type} onChange={(value) => setType(value)}>
+            <Select.Option value="all">ALL</Select.Option>
+            <Select.Option value="income">INCOME</Select.Option>
+            <Select.Option value="expense">EXPENSE</Select.Option>
+          </Select>
+        </div>
+        <div>
+          <button
+            className="btn btn-primary"
+            onClick={() => setShowModal(true)}
+          >
+            Add New
+          </button>
+        </div>
       </div>
+
       <div className="content">
         <Table
           columns={[
