@@ -24,6 +24,7 @@ const HomePage = () => {
   const [transections, setTransections] = useState([]); // Initialize transections state as an empty array
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState(null);
+  const [frequency, setFrequency] = useState(" 7 ");
 
   const handleEdit = (transaction) => {
     setEditModalVisible(true);
@@ -146,7 +147,7 @@ const HomePage = () => {
     try {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem("user"));
-      const response = await getTransections(user._id);
+      const response = await getTransections(user._id, frequency);
       setLoading(false);
 
       console.log("API response:", response); // Log the API response
@@ -168,7 +169,7 @@ const HomePage = () => {
   // Use useEffect to fetch transaction data when the component mounts
   useEffect(() => {
     fetchTransections();
-  }, []);
+  }, [frequency]);
 
   //Form handling
   const handleSubmit = async (values) => {
@@ -196,7 +197,15 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <div className="filters">Range filters</div>
+      <div className="filters">
+        <h6>Select Frequency</h6>
+        <Select value={frequency} onChange={(values) => setFrequency(values)}>
+          <Select.Option value="7">LAST 1 WEEK</Select.Option>
+          <Select.Option value="30">LAST 1 MONTH</Select.Option>
+          <Select.Option value="365">LAST 1 YEAR</Select.Option>
+          <Select.Option value="custom">CUSTOM</Select.Option>
+        </Select>
+      </div>
       {loading && <Spinner />}
       <div>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>

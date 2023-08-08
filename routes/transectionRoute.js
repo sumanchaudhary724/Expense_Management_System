@@ -1,4 +1,5 @@
 import express from "express";
+import moment from "moment";
 import {
   addTransections,
   getTransections,
@@ -33,7 +34,13 @@ router.post("/", async (req, res) => {
 // Get all transactions
 router.get("/", async (req, res) => {
   try {
-    const transections = await getTransections();
+    const { frequency } = req.body;
+    const transections = await getTransections({
+      date: {
+        $gt: moment().subtract(Number(frequency), "M").toDate(),
+      },
+      userid: req.body.userid,
+    });
     res.json({
       status: "success",
       message: "Transection list",

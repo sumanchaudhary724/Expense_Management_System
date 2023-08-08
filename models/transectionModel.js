@@ -1,5 +1,4 @@
 import transectionSchema from "./transectionSchema.js";
-
 export const addTransections = (obj) => {
   return transectionSchema(obj).save();
 };
