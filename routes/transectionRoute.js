@@ -3,6 +3,7 @@ import moment from "moment";
 import {
   addTransections,
   getTransections,
+  getEachTransections,
   deleteTransections,
   updateTransections,
 } from "../models/transectionModel.js";
@@ -45,6 +46,25 @@ router.get("/", async (req, res) => {
       status: "success",
       message: "Transaction list",
       transections,
+    });
+  } catch (error) {
+    res.json({
+      status: "error",
+      message: error.message,
+    });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const { type } = req.body; // Use req.query to get query parameters
+    const eachtransections = await getEachTransections({
+      type,
+    });
+    res.json({
+      status: "success",
+      message: "Transaction list",
+      eachtransections,
     });
   } catch (error) {
     res.json({

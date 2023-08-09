@@ -7,6 +7,10 @@ export const getTransections = () => {
   return transectionSchema.find();
 };
 
+export const getEachTransections = (type) => {
+  return transectionSchema.find(type);
+};
+
 export const updateTransections = (_id, data) => {
   return transectionSchema.findByIdAndUpdate(_id, data);
 };
