@@ -36,35 +36,8 @@ router.get("/", async (req, res) => {
   try {
     const { frequency, userid, type } = req.query; // Use req.query to get query parameters
 
-    let dateQuery = {};
-    if (frequency !== "custom") {
-      dateQuery = {
-        date: {
-          $gt: moment().subtract(Number(frequency), "d").toDate(),
-        },
-      };
-    } else {
-      // If custom frequency is selected, ensure selectedDate has values
-      if (Array.isArray(selectedDate) && selectedDate.length === 2) {
-        dateQuery = {
-          date: {
-            $gte: moment(selectedDate[0]).startOf("day").toDate(),
-            $lte: moment(selectedDate[1]).endOf("day").toDate(),
-          },
-        };
-      }
-    }
-
-    let typeQuery = {};
-    if (type && type !== "all") {
-      typeQuery = { type: type };
-    }
-
-    const transections = await getTransections({
-      ...dateQuery,
-      ...typeQuery,
-      userid: userid,
-    });
+    // Call the updated getTransections function with type parameter
+    const transections = await getTransections(userid, frequency, type);
 
     res.json({
       status: "success",
@@ -78,6 +51,8 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
+// ...
 
 // Update a transaction
 router.put("/:id", async (req, res) => {
