@@ -3,7 +3,6 @@ import moment from "moment";
 import {
   addTransections,
   getTransections,
-  getEachTransections,
   deleteTransections,
   updateTransections,
 } from "../models/transectionModel.js";
@@ -32,39 +31,45 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all transactions
+// Get all transactions with optional type filter
 router.get("/", async (req, res) => {
   try {
-    const { frequency, userid } = req.query; // Use req.query to get query parameters
+    const { frequency, userid, type } = req.query; // Use req.query to get query parameters
+
+    let dateQuery = {};
+    if (frequency !== "custom") {
+      dateQuery = {
+        date: {
+          $gt: moment().subtract(Number(frequency), "d").toDate(),
+        },
+      };
+    } else {
+      // If custom frequency is selected, ensure selectedDate has values
+      if (Array.isArray(selectedDate) && selectedDate.length === 2) {
+        dateQuery = {
+          date: {
+            $gte: moment(selectedDate[0]).startOf("day").toDate(),
+            $lte: moment(selectedDate[1]).endOf("day").toDate(),
+          },
+        };
+      }
+    }
+
+    let typeQuery = {};
+    if (type && type !== "all") {
+      typeQuery = { type: type };
+    }
+
     const transections = await getTransections({
-      date: {
-        $gt: moment().subtract(Number(frequency), "d").toDate(),
-      },
+      ...dateQuery,
+      ...typeQuery,
       userid: userid,
     });
+
     res.json({
       status: "success",
       message: "Transaction list",
       transections,
-    });
-  } catch (error) {
-    res.json({
-      status: "error",
-      message: error.message,
-    });
-  }
-});
-
-router.get("/", async (req, res) => {
-  try {
-    const { type } = req.body; // Use req.query to get query parameters
-    const eachtransections = await getEachTransections({
-      type,
-    });
-    res.json({
-      status: "success",
-      message: "Transaction list",
-      eachtransections,
     });
   } catch (error) {
     res.json({

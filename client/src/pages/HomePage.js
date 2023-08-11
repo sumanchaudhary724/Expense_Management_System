@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Modal,
   Form,
@@ -177,10 +177,17 @@ const HomePage = () => {
     }
   };
 
-  // Use useEffect to fetch transaction data when the component mounts
+  // Memoize the fetchTransections function using useCallback
+  const memoizedFetchTransections = useCallback(fetchTransections, [
+    frequency,
+    selectedDate,
+    type,
+  ]);
+
+  // Use useEffect with the memoizedFetchTransections
   useEffect(() => {
-    fetchTransections();
-  }, [frequency, selectedDate, type]);
+    memoizedFetchTransections();
+  }, [memoizedFetchTransections]);
 
   //Form handling
   const handleSubmit = async (values) => {
@@ -228,9 +235,9 @@ const HomePage = () => {
         <div>
           <h6>Select Type</h6>
           <Select value={type} onChange={(value) => setType(value)}>
-            <Select.Option value="all">ALL</Select.Option>
-            <Select.Option value="income">INCOME</Select.Option>
-            <Select.Option value="expense">EXPENSE</Select.Option>
+            <Select.Option value="all">All</Select.Option>
+            <Select.Option value="income">Income</Select.Option>
+            <Select.Option value="expense">Expense</Select.Option>
           </Select>
         </div>
         <div>
