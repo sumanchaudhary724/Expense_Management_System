@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   Form,
@@ -8,18 +8,15 @@ import {
   Table,
   Space,
   Button,
-  DatePicker,
 } from "antd";
 import Layout from "../components/Layout/Layout";
 import {
   postTransection,
-  getTransections,
+  getAllTransections,
   deleteTransections,
   updateTransections,
 } from "../axiosHelper";
 import Spinner from "../components/Spinner";
-import moment from "moment";
-const { RangePicker } = DatePicker;
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -27,9 +24,6 @@ const HomePage = () => {
   const [transections, setTransections] = useState([]); // Initialize transections state as an empty array
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState(null);
-  const [frequency, setFrequency] = useState(" 7 ");
-  const [selectedDate, setSelectedDate] = useState([]);
-  const [type, setType] = useState("all");
 
   const handleEdit = (transaction) => {
     setEditModalVisible(true);
@@ -118,7 +112,6 @@ const HomePage = () => {
     {
       title: "Date",
       dataIndex: "date",
-      render: (text) => <span>{moment(text).format("YYYY-MM-DD")}</span>,
       key: "date",
     },
     {
@@ -153,12 +146,7 @@ const HomePage = () => {
     try {
       setLoading(true);
       const user = JSON.parse(localStorage.getItem("user"));
-      const response = await getTransections(
-        user._id,
-        frequency,
-        selectedDate,
-        type
-      );
+      const response = await getAllTransections(user._id);
       setLoading(false);
 
       console.log("API response:", response); // Log the API response
@@ -177,17 +165,10 @@ const HomePage = () => {
     }
   };
 
-  // Memoize the fetchTransections function using useCallback
-  const memoizedFetchTransections = useCallback(fetchTransections, [
-    frequency,
-    selectedDate,
-    type,
-  ]);
-
-  // Use useEffect with the memoizedFetchTransections
+  // Use useEffect to fetch transaction data when the component mounts
   useEffect(() => {
-    memoizedFetchTransections();
-  }, [memoizedFetchTransections]);
+    fetchTransections();
+  }, []);
 
   //Form handling
   const handleSubmit = async (values) => {
@@ -215,41 +196,13 @@ const HomePage = () => {
 
   return (
     <Layout>
+      <div className="filters">Range filters</div>
       {loading && <Spinner />}
-      <div className="filters">
-        <div>
-          <h6>Select Frequency</h6>
-          <Select value={frequency} onChange={(value) => setFrequency(value)}>
-            <Select.Option value="7">LAST 1 Week</Select.Option>
-            <Select.Option value="30">LAST 1 Month</Select.Option>
-            <Select.Option value="365">LAST 1 Year</Select.Option>
-            <Select.Option value="custom">Custom</Select.Option>
-          </Select>
-          {frequency === "custom" && (
-            <RangePicker
-              value={selectedDate}
-              onChange={(dates) => setSelectedDate(dates)}
-            />
-          )}
-        </div>
-        <div>
-          <h6>Select Type</h6>
-          <Select value={type} onChange={(value) => setType(value)}>
-            <Select.Option value="all">All</Select.Option>
-            <Select.Option value="income">Income</Select.Option>
-            <Select.Option value="expense">Expense</Select.Option>
-          </Select>
-        </div>
-        <div>
-          <button
-            className="btn btn-primary"
-            onClick={() => setShowModal(true)}
-          >
-            Add New
-          </button>
-        </div>
+      <div>
+        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+          Add New
+        </button>
       </div>
-
       <div className="content">
         <Table
           columns={[

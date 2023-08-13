@@ -1,9 +1,9 @@
 import transectionSchema from "./transectionSchema.js";
+
 export const addTransections = (obj) => {
   return transectionSchema(obj).save();
 };
-
-export const getTransections = () => {
+export const getAllTransections = async () => {
   return transectionSchema.find();
 };
 

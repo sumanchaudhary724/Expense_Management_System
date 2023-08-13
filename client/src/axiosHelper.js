@@ -8,7 +8,6 @@ const transectionAPI = rootAPI + "/api/v1/transections";
 export const postUser = async (userData) => {
   try {
     const { data } = await axios.post(userAPI, userData);
-
     return data;
   } catch (error) {
     return {
@@ -21,7 +20,6 @@ export const postUser = async (userData) => {
 export const loginUser = async (userData) => {
   try {
     const { data } = await axios.post(userAPI + "/login", userData);
-
     return data;
   } catch (error) {
     return {
@@ -33,8 +31,7 @@ export const loginUser = async (userData) => {
 
 export const postTransection = async (obj) => {
   try {
-    const { data } = await axios.post(transectionAPI, obj);
-
+    const { data } = await axios.post(transectionAPI + "/add-transection", obj);
     return data;
   } catch (error) {
     return {
@@ -44,9 +41,20 @@ export const postTransection = async (obj) => {
   }
 };
 
-export const getTransections = async (userData) => {
+export const getAllTransections = async (
+  userid,
+  frequency,
+  selectedDate,
+  type
+) => {
   try {
-    const { data } = await axios.get(transectionAPI, userData);
+    const { data } = await axios.get(transectionAPI + "/get-transection", {
+      userid,
+      frequency,
+      selectedDate,
+      type,
+    });
+
     return data;
   } catch (error) {
     return {
@@ -59,7 +67,6 @@ export const getTransections = async (userData) => {
 export const deleteTransections = async (_id) => {
   try {
     const { data } = await axios.delete(transectionAPI + "/" + _id);
-
     return data;
   } catch (error) {
     return {

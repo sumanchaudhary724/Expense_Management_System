@@ -1,8 +1,7 @@
 import express from "express";
-import moment from "moment";
 import {
   addTransections,
-  getTransections,
+  getAllTransections,
   deleteTransections,
   updateTransections,
 } from "../models/transectionModel.js";
@@ -10,7 +9,7 @@ import {
 const router = express.Router();
 
 // Add a new transaction
-router.post("/", async (req, res) => {
+router.post("/add-transection", async (req, res) => {
   try {
     const result = await addTransections(req.body);
 
@@ -31,17 +30,13 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all transactions with optional type filter
-router.get("/", async (req, res) => {
+// Get all transactions
+router.get("/get-transection", async (req, res) => {
   try {
-    const { frequency, userid, type } = req.query; // Use req.query to get query parameters
-
-    // Call the updated getTransections function with type parameter
-    const transections = await getTransections(userid, frequency, type);
-
+    const transections = await getAllTransections();
     res.json({
       status: "success",
-      message: "Transaction list",
+      message: "Transection list",
       transections,
     });
   } catch (error) {
@@ -51,8 +46,6 @@ router.get("/", async (req, res) => {
     });
   }
 });
-
-// ...
 
 // Update a transaction
 router.put("/:id", async (req, res) => {
