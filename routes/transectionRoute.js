@@ -4,8 +4,8 @@ import {
   getAllTransections,
   deleteTransections,
   updateTransections,
+  getFilterTransections,
 } from "../models/transectionModel.js";
-import moment from "moment";
 
 const router = express.Router();
 
@@ -34,23 +34,7 @@ router.post("/add-transection", async (req, res) => {
 // Get all transactions
 router.get("/get-transection", async (req, res) => {
   try {
-    const { frequency, selectedDate, type } = req.body;
-    const transections = await getAllTransections({
-      ...(frequency !== "custom"
-        ? {
-            date: {
-              $gt: moment().subtract(Number(frequency), "d").toDate(),
-            },
-          }
-        : {
-            date: {
-              $gte: selectedDate[0],
-              $lte: selectedDate[1],
-            },
-          }),
-      userid: req.body.userid,
-      ...(type !== "all" && { type }),
-    });
+    const transections = await getAllTransections();
     res.json({
       status: "success",
       message: "Transection list",
@@ -61,6 +45,29 @@ router.get("/get-transection", async (req, res) => {
       status: "error",
       message: error.message,
     });
+  }
+});
+
+// POST transactions with filters
+router.post("/api/v1/transections/filter", async (req, res) => {
+  try {
+    const { frequency, type, startDate, endDate } = req.body;
+
+    // Build the query based on the provided filters
+    const query = {
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    };
+    if (type !== "all") {
+      query.type = type;
+    }
+
+    const transactions = await getFilterTransections();
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

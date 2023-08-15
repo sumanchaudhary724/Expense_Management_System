@@ -6,6 +6,9 @@ export const addTransections = (obj) => {
 export const getAllTransections = async () => {
   return transectionSchema.find();
 };
+export const getFilterTransections = async (query) => {
+  return transectionSchema.find(query);
+};
 
 export const updateTransections = (_id, data) => {
   return transectionSchema.findByIdAndUpdate(_id, data);

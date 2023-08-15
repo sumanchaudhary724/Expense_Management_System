@@ -41,19 +41,9 @@ export const postTransection = async (obj) => {
   }
 };
 
-export const getAllTransections = async (
-  userid,
-  frequency,
-  selectedDate,
-  type
-) => {
+export const getAllTransections = async () => {
   try {
-    const { data } = await axios.get(transectionAPI + "/get-transection", {
-      userid,
-      frequency,
-      selectedDate,
-      type,
-    });
+    const { data } = await axios.get(transectionAPI + "/get-transection");
 
     return data;
   } catch (error) {
@@ -61,6 +51,15 @@ export const getAllTransections = async (
       status: "error",
       message: error.message,
     };
+  }
+};
+
+export const getFilterTransection = async () => {
+  try {
+    const response = await axios.post(transectionAPI + "/filter");
+    return response.data;
+  } catch (error) {
+    console.error("Error filtering transactions:", error);
   }
 };
 
