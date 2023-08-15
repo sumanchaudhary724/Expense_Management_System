@@ -16,7 +16,6 @@ import {
   getAllTransections,
   deleteTransections,
   updateTransections,
-  getFilterTransection,
 } from "../axiosHelper";
 import Spinner from "../components/Spinner";
 const { RangePicker } = DatePicker;
@@ -24,13 +23,12 @@ const { RangePicker } = DatePicker;
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [transections, setTransections] = useState([]);
+  const [transections, setTransections] = useState([]); // Initialize transections state as an empty array
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState(null);
   const [frequency, setFrequency] = useState("7");
-  const [selectedDate, setSelectedDate] = useState([]);
+  const [selectedDate, setSelectedate] = useState([]);
   const [type, setType] = useState("all");
-  const [filteredTransactions, setFilteredTransactions] = useState([]);
 
   const handleEdit = (transaction) => {
     setEditModalVisible(true);
@@ -52,6 +50,7 @@ const HomePage = () => {
         message.success("Transaction updated successfully");
         setEditModalVisible(false);
         setCurrentTransaction(null);
+        // Update the state by fetching the latest transactions
         fetchTransections();
       } else {
         message.error(response.message);
@@ -59,78 +58,37 @@ const HomePage = () => {
     } catch (error) {
       setLoading(false);
       message.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleFilter = async () => {
-    try {
-      let startDate = null;
-      let endDate = null;
-
-      if (frequency === "custom") {
-        startDate = selectedDate[0].format("YYYY-MM-DD");
-        endDate = selectedDate[1].format("YYYY-MM-DD");
-      }
-
-      const response = await getFilterTransection({
-        frequency,
-        type,
-        startDate,
-        endDate,
-      });
-
-      setFilteredTransactions(response.data);
-    } catch (error) {
-      console.error("Error filtering transactions:", error);
-    }
-  };
-
-  const fetchTransections = async () => {
+  // Function to delete a transaction
+  const handleDelete = async (transactionId) => {
     try {
       setLoading(true);
-      const user = JSON.parse(localStorage.getItem("user"));
-      const response = await getAllTransections(user._id);
+      const response = await deleteTransections(transactionId);
       setLoading(false);
 
       if (response.status === "success") {
-        setTransections(response.transections);
+        message.success("Transaction deleted successfully");
+        // Update the state by filtering out the deleted transaction
+        setTransections((prevTransactions) =>
+          prevTransactions.filter((item) => item._id !== transactionId)
+        );
       } else {
         message.error(response.message);
       }
     } catch (error) {
       setLoading(false);
-      console.error("Error fetching transactions:", error);
-      message.error("Error fetching transactions.");
+      message.error("Something went wrong while deleting the transaction.");
     }
   };
 
-  useEffect(() => {
-    fetchTransections();
-  }, []);
-
-  const handleSubmit = async (values) => {
-    try {
-      setLoading(true);
-      const user = JSON.parse(localStorage.getItem("user"));
-
-      const response = await postTransection({ ...values, userid: user._id });
-      setLoading(false);
-      if (response.status === "success") {
-        message.success("Transaction added successfully");
-        setShowModal(false);
-        fetchTransections();
-      } else {
-        message.error(response.message);
-      }
-    } catch (error) {
-      setLoading(false);
-      message.error("Something went wrong");
-    }
-  };
-
-  const tableData = filteredTransactions.map((item, i) => ({
+  // Calculate tableData using the transections state
+  const tableData = transections.map((item, i) => ({
     key: item._id,
-    SN: i + 1,
+    SN: i + 1, // Add the SN (expense ID number) starting from 1
     date: item.date,
     amount: item.amount,
     type: item.type,
@@ -149,9 +107,10 @@ const HomePage = () => {
     ),
   }));
 
+  // table data
   const columns = [
     {
-      title: "SN",
+      title: "SN", // Display the SN (expense ID number) as a column
       dataIndex: "SN",
       key: "SN",
     },
@@ -185,30 +144,58 @@ const HomePage = () => {
       dataIndex: "description",
       key: "description",
     },
-    {
-      title: "Actions",
-      dataIndex: "actions",
-      key: "actions",
-    },
   ];
 
-  const handleDelete = async (transactionId) => {
+  // Function to fetch transaction data
+  const fetchTransections = async () => {
     try {
       setLoading(true);
-      const response = await deleteTransections(transactionId);
+      const user = JSON.parse(localStorage.getItem("user"));
+      const response = await getAllTransections(user._id);
       setLoading(false);
 
+      console.log("API response:", response); // Log the API response
+
       if (response.status === "success") {
-        message.success("Transaction deleted successfully");
-        setTransections((prevTransactions) =>
-          prevTransactions.filter((item) => item._id !== transactionId)
-        );
+        const transectionsArray = response.transections; // Extract the 'transections' array from the response
+        setTransections(transectionsArray); // Update the 'transections' state with the extracted array
+        console.log("Transections array:", transectionsArray);
       } else {
         message.error(response.message);
       }
     } catch (error) {
       setLoading(false);
-      message.error("Something went wrong while deleting the transaction.");
+      console.error("Error fetching transactions:", error);
+      message.error("Error fetching transactions.");
+    }
+  };
+
+  // Use useEffect to fetch transaction data when the component mounts
+  useEffect(() => {
+    fetchTransections();
+  }, []);
+
+  //Form handling
+  const handleSubmit = async (values) => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const response = await postTransection({ ...values, userid: user._id });
+      setLoading(false);
+      if (response.status === "success") {
+        message.success("Transaction added successfully");
+        setShowModal(false);
+        // Update the state by fetching the latest transactions
+        fetchTransections();
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      message.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -227,7 +214,7 @@ const HomePage = () => {
           {frequency === "custom" && (
             <RangePicker
               value={selectedDate}
-              onChange={(values) => setSelectedDate(values)}
+              onChange={(values) => setSelectedate(values)}
             />
           )}
         </div>
@@ -239,9 +226,6 @@ const HomePage = () => {
             <Select.Option value="expense">EXPENSE</Select.Option>
           </Select>
         </div>
-        <Button type="primary" onClick={handleFilter}>
-          Filter Transactions
-        </Button>
       </div>
       <div>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>
