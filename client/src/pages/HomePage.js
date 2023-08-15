@@ -8,6 +8,7 @@ import {
   Table,
   Space,
   Button,
+  DatePicker,
 } from "antd";
 import Layout from "../components/Layout/Layout";
 import {
@@ -17,6 +18,7 @@ import {
   updateTransections,
 } from "../axiosHelper";
 import Spinner from "../components/Spinner";
+const { RangePicker } = DatePicker;
 
 const HomePage = () => {
   const [showModal, setShowModal] = useState(false);
@@ -24,6 +26,11 @@ const HomePage = () => {
   const [transections, setTransections] = useState([]); // Initialize transections state as an empty array
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [currentTransaction, setCurrentTransaction] = useState(null);
+  const [frequency, setFrequency] = useState("7");
+  const [selectedDate, setSelectedate] = useState([]);
+  const [type, setType] = useState("all");
+  const [viewData, setViewData] = useState("table");
+  const [editable, setEditable] = useState(null);
 
   const handleEdit = (transaction) => {
     setEditModalVisible(true);
@@ -196,8 +203,32 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <div className="filters">Range filters</div>
       {loading && <Spinner />}
+      <div className="filters">
+        <div>
+          <h6>Select Frequency</h6>
+          <Select value={frequency} onChange={(values) => setFrequency(values)}>
+            <Select.Option value="7">LAST 1 Week</Select.Option>
+            <Select.Option value="30">LAST 1 Month</Select.Option>
+            <Select.Option value="365">LAST 1 year</Select.Option>
+            <Select.Option value="custom">custom</Select.Option>
+          </Select>
+          {frequency === "custom" && (
+            <RangePicker
+              value={selectedDate}
+              onChange={(values) => setSelectedate(values)}
+            />
+          )}
+        </div>
+        <div className="filter-tab ">
+          <h6>Select Type</h6>
+          <Select value={type} onChange={(values) => setType(values)}>
+            <Select.Option value="all">ALL</Select.Option>
+            <Select.Option value="income">INCOME</Select.Option>
+            <Select.Option value="expense">EXPENSE</Select.Option>
+          </Select>
+        </div>
+      </div>
       <div>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>
           Add New

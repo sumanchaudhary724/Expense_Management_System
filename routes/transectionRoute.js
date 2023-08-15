@@ -5,6 +5,7 @@ import {
   deleteTransections,
   updateTransections,
 } from "../models/transectionModel.js";
+import moment from "moment";
 
 const router = express.Router();
 
@@ -33,7 +34,23 @@ router.post("/add-transection", async (req, res) => {
 // Get all transactions
 router.get("/get-transection", async (req, res) => {
   try {
-    const transections = await getAllTransections();
+    const { frequency, selectedDate, type } = req.body;
+    const transections = await getAllTransections({
+      ...(frequency !== "custom"
+        ? {
+            date: {
+              $gt: moment().subtract(Number(frequency), "d").toDate(),
+            },
+          }
+        : {
+            date: {
+              $gte: selectedDate[0],
+              $lte: selectedDate[1],
+            },
+          }),
+      userid: req.body.userid,
+      ...(type !== "all" && { type }),
+    });
     res.json({
       status: "success",
       message: "Transection list",
