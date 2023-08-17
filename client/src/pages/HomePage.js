@@ -16,6 +16,7 @@ import {
   getAllTransections,
   deleteTransections,
   updateTransections,
+  getFilterTransection,
 } from "../axiosHelper";
 import Spinner from "../components/Spinner";
 const { RangePicker } = DatePicker;
@@ -173,7 +174,7 @@ const HomePage = () => {
   // Use useEffect to fetch transaction data when the component mounts
   useEffect(() => {
     fetchTransections();
-  }, []);
+  }, [frequency, selectedDate, type]);
 
   //Form handling
   const handleSubmit = async (values) => {
@@ -185,6 +186,36 @@ const HomePage = () => {
       setLoading(false);
       if (response.status === "success") {
         message.success("Transaction added successfully");
+        setShowModal(false);
+        // Update the state by fetching the latest transactions
+        fetchTransections();
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      message.error("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //Form handling
+  const handleFilter = async (values) => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const response = await getFilterTransection({
+        ...values,
+        userid: user._id,
+        frequency,
+        selectedDate,
+        type,
+      });
+      setLoading(false);
+      if (response.status === "success") {
+        message.success("Filtered transaction successfully");
         setShowModal(false);
         // Update the state by fetching the latest transactions
         fetchTransections();
@@ -226,6 +257,9 @@ const HomePage = () => {
             <Select.Option value="expense">EXPENSE</Select.Option>
           </Select>
         </div>
+        <button className="btn btn-primary" onClick={handleFilter}>
+          Apply filter
+        </button>
       </div>
       <div>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>

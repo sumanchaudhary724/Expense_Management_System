@@ -56,7 +56,9 @@ export const getAllTransections = async () => {
 
 export const getFilterTransection = async () => {
   try {
-    const response = await axios.post(transectionAPI + "/filter");
+    const response = await axios.get(
+      transectionAPI + "/get-transection" + "/filter"
+    );
     return response.data;
   } catch (error) {
     console.error("Error filtering transactions:", error);
