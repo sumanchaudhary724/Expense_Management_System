@@ -140,11 +140,7 @@ const HomePage = () => {
       dataIndex: "reference",
       key: "reference",
     },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
+    {},
   ];
 
   // Function to fetch transaction data
