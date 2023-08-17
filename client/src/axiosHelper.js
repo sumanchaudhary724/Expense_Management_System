@@ -56,7 +56,7 @@ export const getAllTransections = async () => {
 
 export const getFilterTransection = async () => {
   try {
-    const response = await axios.get(
+    const response = await axios.post(
       transectionAPI + "/get-transection" + "/filter"
     );
     return response.data;

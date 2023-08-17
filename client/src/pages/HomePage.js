@@ -204,21 +204,20 @@ const HomePage = () => {
   const handleFilter = async (values) => {
     try {
       setLoading(true);
-      const user = JSON.parse(localStorage.getItem("user"));
 
       const response = await getFilterTransection({
         ...values,
-        userid: user._id,
         frequency,
         selectedDate,
         type,
       });
+
       setLoading(false);
       if (response.status === "success") {
         message.success("Filtered transaction successfully");
         setShowModal(false);
         // Update the state by fetching the latest transactions
-        fetchTransections();
+        fetchTransections(frequency, selectedDate, type);
       } else {
         message.error(response.message);
       }
