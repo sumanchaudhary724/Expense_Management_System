@@ -39,12 +39,7 @@ router.post("/", async (req, res) => {
     if (msg.includes("E11000 duplicate key error")) {
       msg = "Ther is another user who uses this email in the system";
     }
-    res.json({
-      status: "error",
-      message: msg,
-    });
-  }
-});
+
 
 router.post("/login", async (req, res) => {
   try {
