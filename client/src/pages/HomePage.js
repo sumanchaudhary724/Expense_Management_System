@@ -10,6 +10,7 @@ import {
   Button,
   DatePicker,
 } from "antd";
+import { UnorderedListOutlined, AreaChartOutlined } from "@ant-design/icons";
 import Layout from "../components/Layout/Layout";
 import {
   postTransection,
@@ -30,6 +31,7 @@ const HomePage = () => {
   const [frequency, setFrequency] = useState("7");
   const [selectedDate, setSelectedate] = useState([]);
   const [type, setType] = useState("all");
+  const [viewData, setViewData] = useState("table");
 
   const handleEdit = (transaction) => {
     setEditModalVisible(true);
@@ -252,10 +254,26 @@ const HomePage = () => {
             <Select.Option value="expense">EXPENSE</Select.Option>
           </Select>
         </div>
+
+        <div className="switch-icons">
+          <UnorderedListOutlined
+            className={`mx-2 ${
+              viewData === "table" ? "active-icon" : "inactive-icon"
+            }`}
+            onClick={() => setViewData("table")}
+          />
+          <AreaChartOutlined
+            className={`mx-2 ${
+              viewData === "analytics" ? "active-icon" : "inactive-icon"
+            }`}
+            onClick={() => setViewData("analytics")}
+          />
+        </div>
         <button className="btn btn-primary" onClick={handleFilter}>
           Apply filter
         </button>
       </div>
+
       <div>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>
           Add New

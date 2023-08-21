@@ -49,30 +49,27 @@ router.get("/get-transection", async (req, res) => {
 });
 
 // POST transactions with filters
-router.post(
-  "/api/v1/transections/get-transections/filter",
-  async (req, res) => {
-    try {
-      const { frequency, type, startDate, endDate } = req.body;
+router.get("/api/v1/transections/get-transections/filter", async (req, res) => {
+  try {
+    const { frequency, type, startDate, endDate } = req.body;
 
-      // Build the query based on the provided filters
-      const query = {
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
-      };
-      if (type !== "all") {
-        query.type = type;
-      }
-
-      const transactions = await getFilterTransections();
-      res.status(200).json(transactions);
-    } catch (error) {
-      res.status(500).json({ error: "Internal server error" });
+    // Build the query based on the provided filters
+    const query = {
+      date: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    };
+    if (type !== "all") {
+      query.type = type;
     }
+
+    const transactions = await getFilterTransections();
+    res.status(200).json(transactions);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
-);
+});
 
 // Update a transaction
 router.put("/:id", async (req, res) => {
