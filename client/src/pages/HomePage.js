@@ -20,6 +20,7 @@ import {
   getFilterTransection,
 } from "../axiosHelper";
 import Spinner from "../components/Spinner";
+import Analytics from "../components/Analytics";
 const { RangePicker } = DatePicker;
 
 const HomePage = () => {
@@ -280,13 +281,17 @@ const HomePage = () => {
         </button>
       </div>
       <div className="content">
-        <Table
-          columns={[
-            ...columns,
-            { title: "Actions", dataIndex: "actions", key: "actions" },
-          ]}
-          dataSource={tableData}
-        />
+        {viewData === "table" ? (
+          <Table
+            columns={[
+              ...columns,
+              { title: "Actions", dataIndex: "actions", key: "actions" },
+            ]}
+            dataSource={tableData}
+          />
+        ) : (
+          <Analytics allTransection={transections} />
+        )}
       </div>
       <Modal
         title={currentTransaction ? "Edit Transaction" : "Add Transaction"}
