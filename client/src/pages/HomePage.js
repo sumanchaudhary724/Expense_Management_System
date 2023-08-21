@@ -201,7 +201,12 @@ const HomePage = () => {
     try {
       setLoading(true);
 
-      const response = await getFilterTransection({});
+      const response = await getFilterTransection({
+        ...values,
+        frequency,
+        selectedDate,
+        type,
+      });
 
       setLoading(false);
       if (response.status === "success") {
