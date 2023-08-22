@@ -116,7 +116,35 @@ const Analytics = ({ allTransection }) => {
                   <div className="card-body">
                     <h5>{category.toUpperCase()}</h5>
                     <Progress
-                      percent={((amount / totalTurnover) * 100).toFixed(0)}
+                      percent={((amount / totalIncomeTurnover) * 100).toFixed(
+                        0
+                      )}
+                    />
+                  </div>
+                </div>
+              )
+            );
+          })}
+        </div>
+        <div className="col-md-4">
+          <h4>Category wise Expense</h4>
+          {categories.map((category) => {
+            const amount = allTransection
+              .filter(
+                (transaction) =>
+                  transaction.type === "expense" &&
+                  transaction.category === category
+              )
+              .reduce((acc, transaction) => acc + transaction.amount, 0);
+            return (
+              amount > 0 && (
+                <div className="carrd">
+                  <div className="card-body">
+                    <h5>{category.toUpperCase()}</h5>
+                    <Progress
+                      percent={((amount / totalExpenseTurnover) * 100).toFixed(
+                        0
+                      )}
                     />
                   </div>
                 </div>
