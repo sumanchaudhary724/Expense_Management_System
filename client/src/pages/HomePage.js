@@ -297,7 +297,7 @@ const HomePage = () => {
         open={showModal || editModalVisible}
         onCancel={() => {
           setShowModal(false);
-          handleEditModalClose(); // Close the edit modal and reset currentTransaction
+          handleEditModalClose(); // Reset currentTransaction to empty or null
         }}
         footer={null}
       >
@@ -305,10 +305,9 @@ const HomePage = () => {
           layout="vertical"
           onFinish={currentTransaction ? handleEditSubmit : handleSubmit}
           initialValues={
-            currentTransaction
-              ? { ...currentTransaction } // Initialize with a copy of current transaction data
-              : {} // Initialize with empty object when adding
+            currentTransaction ? { ...currentTransaction } : {} // Initialize with empty object when adding
           }
+          key={currentTransaction ? currentTransaction._id : "add"} // Add a key based on currentTransaction to trigger re-render
         >
           <Form.Item label="Amount" name="amount">
             <Input type="text" />
