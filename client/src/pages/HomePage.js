@@ -35,35 +35,35 @@ const HomePage = () => {
   const [viewData, setViewData] = useState("table");
 
   const handleEdit = (transaction) => {
+    console.log("Edit clicked for transaction:", transaction);
     setEditModalVisible(true);
-    setCurrentTransaction(transaction);
+    setCurrentTransaction({ ...transaction }); // Use a copy of the transaction data
+  };
+
+  const handleEditModalClose = () => {
+    setEditModalVisible(false);
+    setCurrentTransaction(null);
   };
 
   const handleEditSubmit = async (values) => {
     try {
-      setLoading(true);
       const user = JSON.parse(localStorage.getItem("user"));
-
+      setLoading(true);
       const response = await updateTransections(currentTransaction._id, {
         ...values,
         userid: user._id,
       });
       setLoading(false);
-
       if (response.status === "success") {
         message.success("Transaction updated successfully");
-        setEditModalVisible(false);
-        setCurrentTransaction(null);
-        // Update the state by fetching the latest transactions
-        fetchTransections();
+        handleEditModalClose(); // Close the edit modal
+        fetchTransections(); // Update the state by fetching the latest transactions
       } else {
         message.error(response.message);
       }
     } catch (error) {
       setLoading(false);
       message.error("Something went wrong");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -80,6 +80,7 @@ const HomePage = () => {
         setTransections((prevTransactions) =>
           prevTransactions.filter((item) => item._id !== transactionId)
         );
+        handleEditModalClose(); // Reset currentTransaction when a transaction is deleted
       } else {
         message.error(response.message);
       }
@@ -194,8 +195,6 @@ const HomePage = () => {
     } catch (error) {
       setLoading(false);
       message.error("Something went wrong");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -298,14 +297,18 @@ const HomePage = () => {
         open={showModal || editModalVisible}
         onCancel={() => {
           setShowModal(false);
-          setEditModalVisible(false);
-          setCurrentTransaction(null);
+          handleEditModalClose(); // Close the edit modal and reset currentTransaction
         }}
-        footer={false}
+        footer={null}
       >
         <Form
           layout="vertical"
           onFinish={currentTransaction ? handleEditSubmit : handleSubmit}
+          initialValues={
+            currentTransaction
+              ? { ...currentTransaction } // Initialize with a copy of current transaction data
+              : {} // Initialize with empty object when adding
+          }
         >
           <Form.Item label="Amount" name="amount">
             <Input type="text" />
