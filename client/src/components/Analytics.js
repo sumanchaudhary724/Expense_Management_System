@@ -48,8 +48,8 @@ const Analytics = ({ allTransection }) => {
 
   return (
     <>
-      <div className="row">
-        <div className="col-md-4">
+      <div className="row m-3">
+        <div className="col-md-3">
           <div className="card">
             <div className="card-header">
               Total Transactions: {totalTransaction}
@@ -68,14 +68,14 @@ const Analytics = ({ allTransection }) => {
               <Progress
                 type="circle"
                 strokeColor={"red"}
-                className="mx-2"
+                className="mx-2 mt-3"
                 percent={totalExpensePercent.toFixed(0)}
               />
             </div>
           </div>
         </div>
 
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="card">
             <div className="card-header">Total Turnover: {totalTurnover}</div>
             <div className="card-body">
@@ -92,7 +92,7 @@ const Analytics = ({ allTransection }) => {
               <Progress
                 type="circle"
                 strokeColor={"red"}
-                className="mx-2"
+                className="mx-2 mt-3"
                 percent={totalExpenseTurnoverPercent.toFixed(0)}
               />
             </div>
@@ -101,7 +101,7 @@ const Analytics = ({ allTransection }) => {
       </div>
       <div className="row mt-3">
         <div className="col-md-4">
-          <h4>Category wise Income</h4>
+          <h6 className="bg-dark p-2 text-light">Category wise Income</h6>
           {categories.map((category) => {
             const amount = allTransection
               .filter(
@@ -112,7 +112,7 @@ const Analytics = ({ allTransection }) => {
               .reduce((acc, transaction) => acc + transaction.amount, 0);
             return (
               amount > 0 && (
-                <div className="carrd">
+                <div className="card mt-2">
                   <div className="card-body">
                     <h5>{category.toUpperCase()}</h5>
                     <Progress
@@ -126,8 +126,8 @@ const Analytics = ({ allTransection }) => {
             );
           })}
         </div>
-        <div className="col-md-4">
-          <h4>Category wise Expense</h4>
+        <div className="col-md-3">
+          <h6 className="bg-warning p-2 text-light">Categorywise Expense</h6>
           {categories.map((category) => {
             const amount = allTransection
               .filter(
@@ -138,9 +138,9 @@ const Analytics = ({ allTransection }) => {
               .reduce((acc, transaction) => acc + transaction.amount, 0);
             return (
               amount > 0 && (
-                <div className="carrd">
+                <div className="card mt-2">
                   <div className="card-body">
-                    <h5>{category.toUpperCase()}</h5>
+                    <h6>{category.toUpperCase()}</h6>
                     <Progress
                       percent={((amount / totalExpenseTurnover) * 100).toFixed(
                         0
