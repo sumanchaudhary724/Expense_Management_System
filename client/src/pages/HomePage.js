@@ -272,13 +272,11 @@ const HomePage = () => {
         <button className="btn btn-primary" onClick={handleFilter}>
           Apply filter
         </button>
-      </div>
-
-      <div>
         <button className="btn btn-primary" onClick={() => setShowModal(true)}>
           Add New
         </button>
       </div>
+
       <div className="content">
         {viewData === "table" ? (
           <Table
