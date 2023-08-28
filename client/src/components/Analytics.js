@@ -80,8 +80,7 @@ const Analytics = ({ allTransection }) => {
             <div className="card-header">Total Turnover: {totalTurnover}</div>
             <div className="card-body">
               <h5>Income: {totalIncomeTurnover}</h5>
-              <h5>Expense: {totalExpenseTurnover}</h5>
-            </div>
+         
             <div>
               <Progress
                 type="circle"
