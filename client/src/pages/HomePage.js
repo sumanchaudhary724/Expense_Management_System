@@ -321,7 +321,7 @@ const HomePage = () => {
               <Select.Option value="salary">Salary</Select.Option>
               <Select.Option value="tip">Tip</Select.Option>
               <Select.Option value="project">Project</Select.Option>
-
+              <Select.Option value="food">Food</Select.Option>
               <Select.Option value="movie">Movie</Select.Option>
               <Select.Option value="bills">Bills</Select.Option>
               <Select.Option value="medical">Medical</Select.Option>
