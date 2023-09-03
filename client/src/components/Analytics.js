@@ -1,5 +1,5 @@
 import React from "react";
-import { Progress } from "antd";
+import { Progress, Row, Col, Card } from "antd";
 
 const Analytics = ({ allTransection }) => {
   // category
@@ -48,17 +48,14 @@ const Analytics = ({ allTransection }) => {
 
   return (
     <>
-      <div className="row m-3">
-        <div className="col-md-3">
-          <div className="card">
-            <div className="card-header">
-              Total Transactions: {totalTransaction}
-            </div>
-            <div className="card-body">
+      <Row gutter={16}>
+        <Col span={6}>
+          <Card title="Total Transactions">
+            <div className="card-content">
+              {/* Card content for Total Transactions */}
+              <p>Total Transactions: {totalTransaction}</p>
               <h5>Income: {totalIncomeTransaction.length}</h5>
               <h5>Expense: {totalExpenseTransaction.length}</h5>
-            </div>
-            <div>
               <Progress
                 type="circle"
                 strokeColor={"green"}
@@ -72,17 +69,16 @@ const Analytics = ({ allTransection }) => {
                 percent={totalExpensePercent.toFixed(0)}
               />
             </div>
-          </div>
-        </div>
+          </Card>
+        </Col>
 
-        <div className="col-md-3">
-          <div className="card">
-            <div className="card-header">Total Turnover: {totalTurnover}</div>
-            <div className="card-body">
+        <Col span={6}>
+          <Card title="Total Turnover">
+            <div className="card-content">
+              {/* Card content for Total Turnover */}
+              <p>Total Turnover: {totalTurnover}</p>
               <h5>Income: {totalIncomeTurnover}</h5>
               <h5>Expense: {totalExpenseTurnover}</h5>
-            </div>
-            <div>
               <Progress
                 type="circle"
                 strokeColor={"green"}
@@ -96,58 +92,68 @@ const Analytics = ({ allTransection }) => {
                 percent={totalExpenseTurnoverPercent.toFixed(0)}
               />
             </div>
-          </div>
-        </div>
-      </div>
+          </Card>
+        </Col>
 
-      <div className="col-md-3">
-        <h6 className="bg-dark p-2 text-light">Category wise Income</h6>
-        {categories.map((category) => {
-          const amount = allTransection
-            .filter(
-              (transaction) =>
-                transaction.type === "income" &&
-                transaction.category === category
-            )
-            .reduce((acc, transaction) => acc + transaction.amount, 0);
-          return (
-            amount > 0 && (
-              <div className="card mt-2">
-                <div className="card-body">
-                  <h5>{category.toUpperCase()}</h5>
-                  <Progress
-                    percent={((amount / totalIncomeTurnover) * 100).toFixed(0)}
-                  />
-                </div>
-              </div>
-            )
-          );
-        })}
-      </div>
-      <div className="col-md-3">
-        <h6 className="bg-warning p-2 text-light">Categorywise Expense</h6>
-        {categories.map((category) => {
-          const amount = allTransection
-            .filter(
-              (transaction) =>
-                transaction.type === "expense" &&
-                transaction.category === category
-            )
-            .reduce((acc, transaction) => acc + transaction.amount, 0);
-          return (
-            amount > 0 && (
-              <div className="card mt-2">
-                <div className="card-body">
-                  <h6>{category.toUpperCase()}</h6>
-                  <Progress
-                    percent={((amount / totalExpenseTurnover) * 100).toFixed(0)}
-                  />
-                </div>
-              </div>
-            )
-          );
-        })}
-      </div>
+        <Col span={6}>
+          <Card title="Category-wise Income">
+            <div className="card-content">
+              {/* Card content for Category-wise Income */}
+              {categories.map((category) => {
+                const amount = allTransection
+                  .filter(
+                    (transaction) =>
+                      transaction.type === "income" &&
+                      transaction.category === category
+                  )
+                  .reduce((acc, transaction) => acc + transaction.amount, 0);
+                return (
+                  amount > 0 && (
+                    <div className="category-card" key={category}>
+                      <h5>{category.toUpperCase()}</h5>
+                      <Progress
+                        percent={((amount / totalIncomeTurnover) * 100).toFixed(
+                          0
+                        )}
+                      />
+                    </div>
+                  )
+                );
+              })}
+            </div>
+          </Card>
+        </Col>
+
+        <Col span={6}>
+          <Card title="Category-wise Expense">
+            <div className="card-content">
+              {/* Card content for Category-wise Expense */}
+              {categories.map((category) => {
+                const amount = allTransection
+                  .filter(
+                    (transaction) =>
+                      transaction.type === "expense" &&
+                      transaction.category === category
+                  )
+                  .reduce((acc, transaction) => acc + transaction.amount, 0);
+                return (
+                  amount > 0 && (
+                    <div className="category-card" key={category}>
+                      <h5>{category.toUpperCase()}</h5>
+                      <Progress
+                        percent={(
+                          (amount / totalExpenseTurnover) *
+                          100
+                        ).toFixed(0)}
+                      />
+                    </div>
+                  )
+                );
+              })}
+            </div>
+          </Card>
+        </Col>
+      </Row>
     </>
   );
 };

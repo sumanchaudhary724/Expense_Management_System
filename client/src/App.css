@@ -1,1 +1,24 @@
+/* CSS for the Footer Component */
 
+/* Set a maximum height for the footer */
+footer {
+  background-color: #333; /* Dark background color */
+  color: #fff; /* Light text color */
+  max-height: 300px; /* Adjust the maximum height as needed */
+  overflow-y: auto; /* Add vertical scroll if the content exceeds the maximum height */
+}
+
+/* Center the text vertically and horizontally */
+footer .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%; /* Ensure it takes the full height of the footer */
+}
+
+/* Style the text */
+footer p {
+  margin: 0; /* Remove default margin */
+  font-size: 14px; /* Adjust the font size as needed */
+}
