@@ -3,8 +3,8 @@ import transectionSchema from "./transectionSchema.js";
 export const addTransections = (obj) => {
   return transectionSchema(obj).save();
 };
-export const getAllTransections = async () => {
-  return transectionSchema.find();
+export const getAllTransections = async (userid) => {
+  return transectionSchema.find(userid);
 };
 export const getFilterTransections = async (query) => {
   return transectionSchema.find(query);

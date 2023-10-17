@@ -48,7 +48,7 @@ const Analytics = ({ allTransection }) => {
 
   return (
     <>
-      <Row gutter={16}>
+      <Row className="AnalyticsContainer" gutter={16}>
         <Col span={6}>
           <Card title="Total Transactions">
             <div className="card-content">

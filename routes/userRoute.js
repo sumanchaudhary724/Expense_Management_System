@@ -1,6 +1,7 @@
 import express from "express";
 import { getUserByEamil, insertUser } from "../models/userModel.js";
 import { comparePassword, hashPassword } from "../utils/bcrypt.js";
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
