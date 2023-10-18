@@ -6,6 +6,7 @@ import {
   updateTransections,
   getFilterTransections,
 } from "../models/transectionModel.js";
+import { authenticateUser } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
@@ -31,17 +32,24 @@ router.post("/add-transection", async (req, res) => {
   }
 });
 
-// Get all transactions
-router.get("/get-transection", async (req, res) => {
+// Get all transactions-------
+// Assuming you have the necessary imports and middleware set up for your router
+
+// Assuming you have some sort of authentication mechanism and you can access the logged-in user's ID from the request object
+
+// Assuming you have middleware that extracts the user ID from the request
+// Implement the middleware in your router
+router.get("/get-transection", authenticateUser, async (req, res) => {
   try {
-    const transections = await getAllTransections();
+    const loggedInUserId = req.user._id; // Assuming the user ID is accessible via req.user._id
+    const transections = await getAllTransections(loggedInUserId);
     res.json({
       status: "success",
-      message: "Transection list",
+      message: "Transaction list for logged-in user",
       transections,
     });
   } catch (error) {
-    res.json({
+    res.status(500).json({
       status: "error",
       message: error.message,
     });

@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import { authenticateUser } from "./middlewares/authMiddleware.js";
 
 // config dotenv file
 dotenv.config();
@@ -33,7 +34,7 @@ app.get("/", (req, res) => {
 // app.use("/api/v1/users", userRouter);
 app.use("/api/v1/users", userRouter);
 
-app.use("/api/v1/transections", transectionRouter);
+app.use("/api/v1/transections", authenticateUser, transectionRouter);
 
 app.use("/", (req, res) => {
   res.json({

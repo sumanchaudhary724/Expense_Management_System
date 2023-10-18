@@ -1,31 +1,33 @@
 import { getAllTransections } from "../models/transectionModel.js";
 
-export const auth = async (req, res, next) => {
+export const authenticateUser = async (req, res, next) => {
   try {
-    // every request have userId
     const { authorization } = req.headers;
 
-    //get the user from database,
+    // Perform your authentication logic here, for example, check for a valid token or session
+    const isAuthenticated = true; // Replace this with your actual authentication logic
 
-    const user = await getAllTransections(authorization);
+    if (isAuthenticated) {
+      // If authenticated, proceed to the next middleware
+      const user = await getAllTransections(authorization);
 
-    if (user?._id) {
-      //check the role
-      user.password = undefined;
+      if (user?._id) {
+        // Check the role
+        user.password = undefined;
+        req.userInfo = user;
+        return next();
+      }
 
-      req.userInfo = user;
-      // let it go to next router
-      return next();
+      // If the user does not have the necessary permissions
+      return res.json({
+        status: "error",
+        message: "Sorry, you do not have permission to access this API",
+      });
+    } else {
+      return res.status(401).json({ message: "Unauthorized access" });
     }
-
-    // stop here and response to client
-
-    res.json({
-      status: "error",
-      message: "sorry , you do not have permission to this api",
-    });
   } catch (error) {
-    res.json({
+    return res.json({
       status: "error",
       message: error.message,
     });
