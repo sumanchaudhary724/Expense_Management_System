@@ -20,9 +20,3 @@ export const updateTransections = async (_id, data) => {
 export const deleteTransections = async (_id) => {
   return Transection.findByIdAndDelete(_id);
 };
-
-export const getTransactionsForLoggedInUser = async () => {
-  // Implement the logic to get the logged-in user's ID
-  const loggedInUserId = "your_logged_in_user_id"; // Replace this with your logic to get the logged-in user's ID
-  return Transection.find({ userid: loggedInUserId });
-};
