@@ -14,7 +14,7 @@ export const authenticateUser = async (req, res, next) => {
       if (user?._id) {
         // Check the role
         user.password = undefined;
-       
+        req.userInfo = user;
         return next();
       }
 
