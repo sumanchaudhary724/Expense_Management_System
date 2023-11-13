@@ -160,6 +160,7 @@ const HomePage = () => {
       if (response.status === "success") {
         const transectionsArray = response.transections; // Extract the 'transections' array from the response
         setTransections(transectionsArray); // Update the 'transections' state with the extracted array
+        console.log("Transections array:", transectionsArray);
       } else {
         message.error(response.message);
       }
