@@ -155,8 +155,6 @@ const HomePage = () => {
       const response = await getAllTransections(user._id);
       setLoading(false);
 
-      console.log("API response:", response); // Log the API response
-
       if (response.status === "success") {
         const transectionsArray = response.transections; // Extract the 'transections' array from the response
         setTransections(transectionsArray); // Update the 'transections' state with the extracted array
